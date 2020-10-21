@@ -4,8 +4,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/lnyyj/log"
 	"github.com/pkg/errors"
+	"github.com/sirupsen/logrus"
 )
 
 const sessionMapNum = 32
@@ -120,7 +120,7 @@ func (manager *Manager) printSession() {
 		for i := 0; i < sessionMapNum; i++ {
 			sessionNu += len(manager.sessionMaps[i].sessions)
 		}
-		log.Info("manager group number: %d, session number: %d ", sessionMapNum, sessionNu)
+		logrus.Info("manager group number: %d, session number: %d ", sessionMapNum, sessionNu)
 		time.Sleep(1 * time.Second)
 	}
 }

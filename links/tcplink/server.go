@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/lnyyj/log"
+	"github.com/sirupsen/logrus"
 )
 
 // Accept 接受连接
@@ -94,7 +94,7 @@ func (server *Server) Serve(handler Handler) error {
 
 		// 备注: 后续需整理上下文信息
 		go func(conn net.Conn) {
-			log.Info("link ----> conn lip:[%s], rip:[%s] ", conn.LocalAddr().String(), conn.RemoteAddr().String())
+			logrus.Info("link ----> conn lip:[%s], rip:[%s] ", conn.LocalAddr().String(), conn.RemoteAddr().String())
 			codec, ctx, err := server.protocol.NewCodec(conn)
 
 			var session *Session
@@ -119,7 +119,7 @@ func (server *Server) ServeEx(handler Handler, initSession InitSessionFunc) erro
 
 		// 备注: 后续需整理上下文信息
 		go func(conn net.Conn) {
-			log.Debug("link ----> conn lip:[%s], rip:[%s] ", conn.LocalAddr().String(), conn.RemoteAddr().String())
+			logrus.Debug("link ----> conn lip:[%s], rip:[%s] ", conn.LocalAddr().String(), conn.RemoteAddr().String())
 			codec, _, err := server.protocol.NewCodec(conn)
 
 			var (
