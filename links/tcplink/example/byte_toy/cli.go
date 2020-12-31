@@ -7,8 +7,8 @@ import (
 
 	"time"
 
-	"chargerlink.com/golib/link/tcplink"
-	"chargerlink.com/golib/link/tcplink/codec"
+	"github.com/lnyyj/utils/links/tcplink"
+	"github.com/lnyyj/utils/links/tcplink/codec"
 )
 
 func main() {

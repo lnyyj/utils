@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/lnyyj/links/httplink"
+	"github.com/lnyyj/utils/links/httplink"
 )
 
 var (
@@ -18,7 +18,6 @@ var (
 	// Audiences 推送目标
 	Audiences = []string{"tag", "tag_and", "tag_not", "alias", "registration_id", "segment", "abtest"}
 
-	
 	// JPushURL 推送地址
 	JPushURL = "https://api.jpush.cn/v3/push"
 

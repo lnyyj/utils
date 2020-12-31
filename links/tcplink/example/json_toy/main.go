@@ -3,8 +3,8 @@ package main
 import (
 	"log"
 
-	"github.com/funny/tcplink"
-	"github.com/funny/tcplink/codec"
+	link "github.com/lnyyj/utils/links/tcplink"
+	"github.com/lnyyj/utils/links/tcplink/codec"
 )
 
 type AddReq struct {

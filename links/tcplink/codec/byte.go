@@ -10,7 +10,7 @@ import (
 
 	"io/ioutil"
 
-	"chargerlink.com/golib/link/tcplink"
+	"github.com/lnyyj/utils/links/tcplink"
 )
 
 var (

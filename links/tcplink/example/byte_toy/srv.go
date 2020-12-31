@@ -3,15 +3,12 @@ package main
 import (
 	"fmt"
 
-	"chargerlink.com/golib/idgen"
-	"chargerlink.com/golib/link/tcplink"
-	"chargerlink.com/golib/link/tcplink/codec"
-	"chargerlink.com/golib/log"
+	"github.com/lnyyj/utils/links/tcplink"
+	"github.com/lnyyj/utils/links/tcplink/codec"
 )
 
-func main() {
+func main1() {
 	fmt.Println("------> test byte byte toy begin <------")
-	log.InitConsoleOutput(7)
 	// server()
 	server2()
 }
