@@ -25,17 +25,6 @@ type batch struct {
 	sync.Mutex
 }
 
-// NewBatchDo 批量执行
-func NewBatchDo() IBatchdo {
-	b := &batch{
-		maxCount:   defaultMaxCount,
-		maxTimeInv: defaultMaxTimeInv,
-		chdos:      make(chan []interface{}, 32),
-	}
-	go b.run()
-	return b
-}
-
 func (b *batch) DoCondition(count int32, timeinv time.Duration) IBatchdo {
 	b.maxCount = count
 	b.maxTimeInv = timeinv

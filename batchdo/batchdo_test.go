@@ -7,7 +7,7 @@ import (
 )
 
 func Test_batchdo(t *testing.T) {
-	bdo := NewBatchDo().DoCondition(10, 15*time.Second).DoCallback(func(dos []interface{}) error {
+	bdo := New().DoCondition(10, 15*time.Second).DoCallback(func(dos []interface{}) error {
 		fmt.Printf("---->[%d][%+v]\r\n", len(dos), dos)
 		return fmt.Errorf("commit error")
 	})
@@ -25,5 +25,4 @@ func Test_batchdo(t *testing.T) {
 		bdo.Add(i)
 		// time.Sleep(100 * time.Millisecond)
 	}
-	select {}
 }
