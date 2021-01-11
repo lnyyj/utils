@@ -5,13 +5,6 @@ import (
 	"time"
 )
 
-const (
-	// DefaultMaxTimeInv 最大提交时间间隔
-	defaultMaxTimeInv = 10 * time.Second
-	// DefaultMaxCount 最大提交计数
-	defaultMaxCount = 1024
-)
-
 type batch struct {
 	dos        []interface{}
 	doCallback func(dos []interface{}) error
