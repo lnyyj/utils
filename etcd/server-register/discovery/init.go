@@ -16,13 +16,14 @@ var (
 	Config clientv3.Config
 	cli    *clientv3.Client
 
-	lock sync.Locker
+	lock sync.Mutex
 )
 
 type server struct {
 	cur, count   int // 获取时使用
 	name, prefix string
 	nodes        []*node
+	stop         chan bool
 }
 
 type node struct {
@@ -44,10 +45,39 @@ func Add(srvName, prefix string) {
 	watchServers[srvName] = sinfo
 }
 
+// StopWatch ...
+func StopWatch(srvName ...string) {
+	lock.Lock()
+	defer lock.Unlock()
+	for _, name := range srvName {
+		if sinfo, ok := watchServers[name]; ok {
+			sinfo.stop <- true
+		}
+	}
+}
+
+// Get 获取地址
+func Get(srvName string) (addr string) {
+	lock.Lock()
+	defer lock.Unlock()
+	srvInfo, _ := watchServers[srvName]
+	if srvInfo.count == 0 {
+		return ""
+	}
+	// fmt.Println("---->", srvInfo.cur%srvInfo.count)
+
+	addr = srvInfo.nodes[srvInfo.cur%srvInfo.count].addr
+	srvInfo.cur++
+	if srvInfo.cur < 0 {
+		srvInfo.cur = 0
+	}
+	return
+}
+
 // Watch watch server keys
 func Watch(config string) (err error) {
 	if config != "" {
-		if err = json.Unmarshal([]byte(config), Config); err != nil {
+		if err = json.Unmarshal([]byte(config), &Config); err != nil {
 			return
 		}
 	}
@@ -61,6 +91,7 @@ func Watch(config string) (err error) {
 		if err != nil {
 			return err
 		}
+		// fmt.Printf("------>kvs[%+v][%+v]\r\n", server.prefix, resp.Kvs)
 		for _, ev := range resp.Kvs {
 			addServiceList(server.name, string(ev.Key), string(ev.Value))
 		}
@@ -72,24 +103,27 @@ func Watch(config string) (err error) {
 	return
 }
 
-func watch(name, prefix string) {
-	wch := cli.Watch(context.TODO(), prefix, clientv3.WithPrefix())
+func watch(srvName, prefix string) {
+	srvInfo, _ := watchServers[srvName]
 
-	for watchResponse := range wch {
-		// if watchResponse.Canceled || watchResponse.Err() != nil { // 取消watch
-		// 	break
-		// }
-		for _, event := range watchResponse.Events {
-			if event.IsCreate() { // 新增
-				addServiceList(name, string(event.Kv.Key), string(event.Kv.Value))
-			} else if event.IsModify() {
-				modifyServiceList(name, string(event.Kv.Key), string(event.Kv.Value))
-			} else if event.Type == clientv3.EventTypeDelete {
-				delServiceList(name, string(event.Kv.Key))
+	wch := cli.Watch(context.TODO(), prefix, clientv3.WithPrefix())
+	for {
+		select {
+		case <-srvInfo.stop:
+			break
+		case watchResponse := <-wch:
+			for _, event := range watchResponse.Events {
+				if event.IsCreate() { // 新增
+					addServiceList(srvName, string(event.Kv.Key), string(event.Kv.Value))
+				} else if event.IsModify() {
+					modifyServiceList(srvName, string(event.Kv.Key), string(event.Kv.Value))
+				} else if event.Type == clientv3.EventTypeDelete {
+					delServiceList(srvName, string(event.Kv.Key))
+				}
 			}
+
 		}
 	}
-
 }
 
 //addServiceList 新增服务地址
