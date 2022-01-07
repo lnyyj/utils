@@ -4,12 +4,11 @@ import (
 	"log"
 )
 
-type initFunc func() error
 
 // init module
 type initModule struct {
 	name string
-	fn   initFunc
+	fn   func() error
 }
 
 var initFuncs []*initModule
@@ -18,7 +17,7 @@ func init() {
 	initFuncs = make([]*initModule, 0)
 }
 
-func Register(name string, fn initFunc) {
+func Register(name string, fn func() error) {
 	log.Println("register module ", name)
 	initFuncs = append(initFuncs, &initModule{
 		name: name,
