@@ -4,7 +4,7 @@ import (
 	"log"
 )
 
-type initFunc func()
+type initFunc func() error
 
 // init module
 type initModule struct {
@@ -29,6 +29,8 @@ func Register(name string, fn initFunc) {
 func Init() {
 	for _, service := range initFuncs {
 		log.Println("init module  ", service.name)
-		service.fn()
+		if err := service.fn(); err != nil {
+			panic(err)
+		}
 	}
 }
