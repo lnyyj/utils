@@ -6,6 +6,7 @@ import (
 
 type initFunc func()
 
+// init module
 type initModule struct {
 	name string
 	fn   initFunc
