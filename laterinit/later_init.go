@@ -17,7 +17,7 @@ func init() {
 	initFuncs = make([]*initModule, 0)
 }
 
-func RegisterInit(name string, fn initFunc) {
+func Register(name string, fn initFunc) {
 	log.Println("register module ", name)
 	initFuncs = append(initFuncs, &initModule{
 		name: name,
